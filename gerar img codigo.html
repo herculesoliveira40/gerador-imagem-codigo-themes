@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerador de Imagem de Código com Temas</title>
+
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" 
+    rel="stylesheet"
+  >
+
+  <style>
+    /* Reset e layout básico */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      padding: 40px;
+      font-family: 'Fira Code', monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: var(--accent-color);
+    }
+
+    /* Seletor de tema */
+    #themeSelector {
+      margin-bottom: 20px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--accent-color);
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      max-width: 800px;
+      height: 200px;
+      padding: 12px;
+      border-radius: 6px;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 10px;
+      resize: vertical;
+      border: 1px solid var(--accent-color);
+    }
+
+    /* Botões */
+    .btn {
+      margin: 5px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      color: var(--btn-text);
+      background: var(--btn-bg);
+    }
+    .btn-show    { background: var(--btn-show-bg); }
+    .btn-capture { background: var(--btn-capture-bg); }
+    .btn-show:hover    { background: var(--btn-show-hover); }
+    .btn-capture:hover { background: var(--btn-capture-hover); }
+
+    /* Container do código destacado */
+    #codeContainer {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--input-bg);
+      border: 2px solid var(--accent-color);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 800px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text-color);
+    }
+
+    /* Cores de sintaxe via variáveis */
+    .keyword      { color: var(--color-keyword); }
+    .model-name   { color: var(--color-model-name); }
+    .column-name  { color: var(--color-column-name); }
+    .datatype     { color: var(--color-datatype); }
+    .decorator    { color: var(--color-decorator); }
+    .attribute    { color: var(--color-attribute); }
+    .comment      { color: var(--color-comment); font-style: italic; }
+    .method       { color: var(--color-method); }
+
+    /* Tema Default */
+    body {
+      --bg-color:        #282c34;
+      --text-color:      #abb2bf;
+      --input-bg:        #21252b;
+      --input-text:      #e06c75;
+      --accent-color:    #50fa7b;
+      --btn-bg:          #61afef;
+      --btn-text:        #282c34;
+      --btn-show-bg:     #61afef;
+      --btn-capture-bg:  #c678dd;
+      --btn-show-hover:  #519fdb;
+      --btn-capture-hover: #b667cc;
+
+      --color-keyword:      #ff6ac1;
+      --color-model-name:   #50fa7b;
+      --color-column-name:  #a020f0;
+      --color-datatype:     #00ffff;
+      --color-decorator:    #bd93f9;
+      --color-attribute:    #f1fa8c;
+      --color-comment:      #6272a4;
+      --color-method:       #00ced1;
+    }
+
+    /* Tema Dracula */
+    .theme-dracula {
+      --bg-color:        #282a36;
+      --text-color:      #f8f8f2;
+      --input-bg:        #44475a;
+      --input-text:      #ff79c6;
+      --accent-color:    #8be9fd;
+      --btn-bg:          #50fa7b;
+      --btn-text:        #282a36;
+      --btn-show-bg:     #50fa7b;
+      --btn-capture-bg:  #bd93f9;
+      --btn-show-hover:  #44e68b;
+      --btn-capture-hover: #a27acb;
+
+      --color-keyword:      #ff79c6;
+      --color-model-name:   #8be9fd;
+      --color-column-name:  #ffb86c;
+      --color-datatype:     #8be9fd;
+      --color-decorator:    #bd93f9;
+      --color-attribute:    #50fa7b;
+      --color-comment:      #6272a4;
+      --color-method:       #8be9fd;
+    }
+
+    /* Tema Naruto */
+    .theme-naruto {
+      --bg-color:        #1e1e2e;
+      --text-color:      #e0def4;
+      --input-bg:        #302d41;
+      --input-text:      #f7768e;
+      --accent-color:    #ff9e64;
+      --btn-bg:          #9ccfd8;
+      --btn-text:        #1e1e2e;
+      --btn-show-bg:     #9ccfd8;
+      --btn-capture-bg:  #bb9af7;
+      --btn-show-hover:  #85c1cb;
+      --btn-capture-hover: #aa85f7;
+
+      --color-keyword:      #bb9af7;
+      --color-model-name:   #ff9e64;
+      --color-column-name:  #f7768e;
+      --color-datatype:     #9ccfd8;
+      --color-decorator:    #e0def4;
+      --color-attribute:    #f7768e;
+      --color-comment:      #6e6a86;
+      --color-method:       #9ccfd8;
+    }
+  </style>
+</head>
+<body class="theme-default">
+  <h1>Gerador de Imagem de Código Prisma</h1>
+
+  <select id="themeSelector">
+    <option value="default">Default</option>
+    <option value="dracula">Dracula</option>
+    <option value="naruto">Naruto</option>
+  </select>
+
+  <textarea id="codeInput">// cole seu schema Prisma aqui</textarea>
+
+  <div>
+    <button class="btn btn-show" onclick="highlightCode()">Mostrar Código</button>
+    <button class="btn btn-capture" onclick="captureCode()">Gerar Imagem</button>
+  </div>
+
+  <div id="codeContainer"></div>
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    const themeSelector = document.getElementById('themeSelector');
+    themeSelector.addEventListener('change', () => {
+      document.body.className = themeSelector.value === 'default'
+        ? '' 
+        : 'theme-' + themeSelector.value;
+    });
+
+    function highlightCode() {
+      let code = document.getElementById('codeInput').value
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;');
+
+      code = code
+        .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
+        .replace(/\bmodel\b/g, '<span class="keyword">model</span>')
+        .replace(/(<span class="keyword">model<\/span>\s+)(\w+)/g,
+                 '$1<span class="model-name">$2</span>')
+        .replace(/^(\s*)([a-zA-Z]\w*)(?=\s+(Int|String|DateTime|\w+))/gm,
+                 '$1<span class="column-name">$2</span>')
+        .replace(/\b(Int|String|DateTime)\b/g,
+                 '<span class="datatype">$1</span>')
+        .replace(/(@@?default|@@?relation|@@?id|@@?map|@@?index)/g,
+                 '<span class="decorator">$1</span>')
+        .replace(/\b(fields|references|onDelete)\b/g,
+                 '<span class="attribute">$1</span>')
+        .replace(/(\b\w+)(?=\s*\()/g,
+                 '<span class="method">$1</span>');
+
+      const container = document.getElementById('codeContainer');
+      container.innerHTML = `<pre>${code}</pre>`;
+      container.style.display = 'block';
+    }
+
+    function captureCode() {
+      const el = document.getElementById('codeContainer');
+      html2canvas(el, { scale: 2, backgroundColor: null })
+        .then(canvas => {
+          const imgData = canvas.toDataURL('image/png');
+          const newTab = window.open();
+          newTab.document.body.style.margin = '0';
+          newTab.document.body.style.backgroundColor =
+            getComputedStyle(document.body).getPropertyValue('--bg-color').trim();
+          newTab.document.body.innerHTML =
+            '<img src="' + imgData +
+            '" style="display:block; margin:auto; max-width:100%; height:auto;">';
+        })
+        .catch(console.error);
+    }
+  </script>
+</body>
+</html>
